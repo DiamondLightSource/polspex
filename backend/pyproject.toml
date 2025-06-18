@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools >= 61.0", "wheel", "pytest"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "polspex"
+dynamic = ['version']
+dependencies = [ 
+  "requests",
+  "fastapi[standard]",
+  "numpy",
+  "matplotlib", 
+  "lmfit", 
+  "ipython", 
+  "jupyter",
+  "h5py",
+  "hdfmap",
+  "msgpack",
+  "tabulate",
+]
+requires-python = ">=3.11"
+authors = [
+  {name = "Dan Porter", email = "dan.porter@diamond.ac.uk"},
+]
+maintainers = [
+  {name = "Dan Porter", email = "dan.porter@diamond.ac.uk"},
+]
+description = "Polarised X-Ray Spectroscopy simulations and analysis using Quanty"
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = [
+  'xmcd', 'xmld', 'xas'
+]
+classifiers = [
+  'Programming Language :: Python :: 3.10',
+  'Intended Audience :: Science/Research',
+  'Topic :: Scientific/Engineering :: Physics',
+  'License :: OSI Approved :: Apache Software License',
+  'Development Status :: 3 - Alpha',
+]
+
+[project.urls]
+Homepage = "https://github.com/DiamondLightSource/polspex"
+Documentation = "https://diamondlightsource.github.io/polspex/"
+Repository = "https://github.com/DiamondLightSource/polspex"
+"Bug Tracker" = "https://github.com/DiamondLightSource/polspex"
+Changelog = "https://github.com/DiamondLightSource/polspex/blob/master/README.md"
+
+[tool.setuptools.dynamic]
+version = {attr = "polspex.__version__"}
+
+[project.scripts]
+polspex = "polspex.api:polspex_api_server"

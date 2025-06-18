@@ -1,0 +1,48 @@
+site_name: HdfMap
+repo_name: HdfMap
+repo_url: https://github.com/DiamondLightSource/hdfmap
+plugins:
+  - techdocs-diamond
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: sphinx
+nav:
+  - Home:
+    - index.md
+  - Installation:
+    - installation/index.md
+  - Usage:
+    - usage/index.md
+    - usage/examples.md
+    - usage/utilities.md
+  - Code Description:
+    - description/index.md
+    - description/how-it-works.md
+    - Classes:
+      - description/hdfmap_class_HdfMap.md
+      - description/nexus_NexusMap.md
+      - description/reloader_class.md
+    - Modules:
+        - description/hdfmap.md
+        - description/nexus.md
+        - description/hdf_loader.md
+        - description/eval_functions.md
+        - description/file_functions.md
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets

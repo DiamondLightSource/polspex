@@ -1,0 +1,15 @@
+name: polspex
+channels:
+  - conda-forge
+dependencies:
+  - fastapi
+  - ipython
+  - jupyter
+  - lmfit
+  - matplotlib
+  - nodejs
+  - numpy
+  - pnpm
+  - python
+  - requests
+prefix: /scratch/grp66007/software/miniforge/envs/polspex
