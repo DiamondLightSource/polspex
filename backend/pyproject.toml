@@ -46,6 +46,9 @@ Repository = "https://github.com/DiamondLightSource/polspex"
 "Bug Tracker" = "https://github.com/DiamondLightSource/polspex"
 Changelog = "https://github.com/DiamondLightSource/polspex/blob/master/README.md"
 
+[tool.setuptools.package-data]
+polspex = ["*.json", "dist/index.html", "dist/assets/*"]
+
 [tool.setuptools.dynamic]
 version = {attr = "polspex.__version__"}
 
