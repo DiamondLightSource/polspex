@@ -301,7 +301,11 @@ def create_fastapi_app():
         }
         return meta_strings
 
+    # deployment - dist in module directory
     INDEX = os.path.abspath(os.path.join(os.path.dirname(__file__), 'dist'))
+    if not os.path.isdir(INDEX):
+        # dev mode - dist in monorepo frontend
+        INDEX = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'frontend', 'dist'))
     print(INDEX)
     logger.info(f'!!! Frontend: {INDEX}, ispath: {os.path.isdir(INDEX)}')
     app.mount('/', StaticFiles(directory=INDEX, html=True), 'frontend')
