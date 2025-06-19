@@ -301,7 +301,7 @@ def create_fastapi_app():
         }
         return meta_strings
 
-    INDEX = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'frontend', 'dist'))
+    INDEX = os.path.abspath(os.path.join(os.path.dirname(__file__), 'dist'))
     print(INDEX)
     logger.info(f'!!! Frontend: {INDEX}, ispath: {os.path.isdir(INDEX)}')
     app.mount('/', StaticFiles(directory=INDEX, html=True), 'frontend')
