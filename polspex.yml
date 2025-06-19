@@ -12,4 +12,8 @@ dependencies:
   - pnpm
   - python
   - requests
-prefix: /scratch/grp66007/software/miniforge/envs/polspex
+  - pip
+  - pip:
+    - msgpack
+    - tabulate
+    - hdfmap
