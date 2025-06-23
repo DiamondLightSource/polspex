@@ -122,6 +122,9 @@ const fetchFileMetadata = async ({ inputForm, setInputForm }: MeasurementProps) 
       },
       body: JSON.stringify({'files': fileObj}),
     });
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status} ${response.statusText}`);
+    }
     const result = await response.json() as MetaData;
     setInputForm({
       ...inputForm,
@@ -178,6 +181,9 @@ const fetchMeasurement = async (
       },
       body: JSON.stringify({files: files, background_type: background_type}),
     });
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status} ${response.statusText}`);
+    }
     const buffer = await response.arrayBuffer(); 
     const data = await decode(new Uint8Array(buffer)) as MeasuredData; 
     console.log('Measurement Response:', data);

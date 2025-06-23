@@ -129,6 +129,7 @@ function MeasurementInputs( measurementProps: MeasurementProps ) {
         <select name="background" title='Select background subtraction' value={inputForm.background_type} onChange={handleBackgroundChange}>
           <option value="">Select Background</option>
           <option key="flat" value="flat">flat</option>
+          <option key="linear" value="linear">linear</option>
           <option key="curve" value="curve">curved</option>
           <option key="exp" value="exp">exponential</option>
         </select>
