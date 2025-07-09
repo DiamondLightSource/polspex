@@ -161,6 +161,7 @@ interface MeasuredData {
 const fetchMeasurement = async (
   e: React.FormEvent,
   {inputForm, setPlots, setTable, comparison, setComparison, simulationInput, setSimulationInput, config}: MeasurementProps,
+  setError: React.Dispatch<React.SetStateAction<string>>
 ) => {
   e.preventDefault();
   console.log('Submiting Measurement', inputForm);
@@ -181,6 +182,13 @@ const fetchMeasurement = async (
     const buffer = await response.arrayBuffer(); 
     const data = await decode(new Uint8Array(buffer)) as MeasuredData; 
     console.log('Measurement Response:', data);
+    if (data.pol_pairs == null || data.pol_pairs.length == 0) {
+      console.log('No data loaded from ', selectedNumbers, 'error: ', data.table)
+      setError(data.table || 'Unknown Error - see server log')
+      return
+    } else {
+      setError('')
+    }
     const charges = Object.keys(config.available_dq_values[data.element] || {});
     // update plots and table
     setPlots(data.pol_pairs);

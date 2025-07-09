@@ -59,7 +59,9 @@ const NumberRangeSelector: React.FC<MeasurementProps> = ( measurementProps ) => 
       // fetch scan number with similar metadata
       range = await fetchSimilarFiles(range[0], inputForm.filePath, inputForm.fileSpec);
       console.log('Similar files: ', range)
-      if ( range.length > 0 ) {
+      if (range == null) {
+        setRangeError('No files found')
+      } else if ( range.length > 0 ) {
         setInputForm({ 
           ...inputForm, 
           scanNumberRange: `${range[0]}-${range[range.length-1]}`,

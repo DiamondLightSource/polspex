@@ -132,7 +132,7 @@ function App() {
     fileSpec: '',
     selectedNumbers: [],
     fileMetadata: {},
-    background_type: 'exp',
+    background_type: '',
   };
   const simulationForm: SimulationInputForm = {
     ion: '',
@@ -173,24 +173,29 @@ function App() {
         const response = await fetch(apiConfig);
         const result = await response.json();
         setBackendData({...backendData, ...result});
+        console.log('config: ', result)
 
-        if (Object.keys(result.visits).length > 0) {
-          setMeasurementInput({
-            ...measurementInput, 
-            instruments: Object.keys(result.visits) 
-          });
-        }
         if (result.beamline && result.beamline in result.visits) {
           console.log('setting beamline to ', result.beamline);
           const beamline = result.beamline
           const visits = Object.keys(result.visits[result.beamline])
           const visit = visits[0]
+          const fileDir = result.visits[result.beamline][visit]
           setMeasurementInput({
             ...measurementInput,
+            instruments: Object.keys(result.visits), 
             selectedInstrument: beamline,
             visits: visits,
             selectedVisit: visit,
-            filePath: result.visits[result.beamline][visit],
+            filePath: fileDir,
+          });
+          console.log('Setting filePath:', fileDir)
+          console.log('instruments after beamline set:', measurementInput.instruments)
+        } else if (Object.keys(result.visits).length > 0) {
+          console.log('instruments: ', Object.keys(result.visits))
+          setMeasurementInput({
+            ...measurementInput, 
+            instruments: Object.keys(result.visits) 
           });
         }
         setSimulationInput((prev) => ({

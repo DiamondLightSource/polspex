@@ -344,7 +344,7 @@ class XASMeasurement:
                 paths = check_metadata_paths(hdf, self.map)
                 path_str = '\n '.join([f"{k}: {v}" for k, v in paths.items()])
                 raise ValueError(f"Error loading {self.basename}\n    paths:\n{path_str}\n\nException:\n{e}")
-            if len(self.energy) <= 1:
+            if np.size(self.energy) <= 1:
                 en_path = self.map.eval(hdf, '_' + XASMetadata.energy)
                 raise ValueError(f"Energy has the wrong shape: Energy [{self.energy.shape}]: {en_path}")
         

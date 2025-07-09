@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import type { FormErrors } from './formParameters';
 import type { SimulationProps } from '../App';
 import { tooltips, dq_labels } from './formParameters';
-import { TextInput, NumericInput, VectorInput } from './formInputs';
+import { NumericInput, VectorInput } from './formInputs';
 import elementDescription from './elements';
 import { handleSubmit } from './handleSubmit';
 
@@ -131,7 +131,6 @@ function SimulationInputs( props: SimulationProps) {
       <VectorInput name="bField" label="Magnetic Field [T]" value={[formData.bFieldX, formData.bFieldY, formData.bFieldZ]} onChange={handleChange} error={errors.bField} />
       <VectorInput name="hField" label="Exchange Field [eV]" value={[formData.hFieldX, formData.hFieldY, formData.hFieldZ]} onChange={handleChange} error={errors.hField} />
       <NumericInput name="temperature" label="Temperature [K]" value={formData.temperature} onChange={handleChange} error={errors.temperature} />
-      <TextInput name="path" label="Quanty Path" value={formData.path} onChange={handleChange} error={errors.path} />
       <button type="submit" className="submit-button">Submit</button>
     </form>
   );

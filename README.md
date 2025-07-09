@@ -29,3 +29,13 @@ $ python -m pip install .
 # Now run polspex!
 $ polspex
 ```
+
+### Dev Notes
+#### Updating dls_sw/apps/polspex
+Quick and dirty method (change in the future!)
+```bash
+# in development directory
+(polspex) $ cd frontend
+(polspex) $ pnpm build
+(polspex) $ cp -r dist/ /dls_sw/apps/polspex/0.1/env/lib/python3.13/site-packages/polspex/
+```

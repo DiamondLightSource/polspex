@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import type { MeasurementProps } from '../App';
 import type { ScanFiles } from './getData';
@@ -10,12 +10,14 @@ import NumberRangeSelector from './NumberRangeSelector';
 function MeasurementInputs( measurementProps: MeasurementProps ) {
   const { inputForm, setInputForm, config } = measurementProps;
   const { filePath, selectedInstrument, instruments, selectedVisit, visits } = inputForm;
+  const [formError, setFormError] = useState<string>('');
 
   // load files from visit path on visitPath change
   useEffect(() => {
     const getScanFiles = async () => {
       if (!filePath) return;
       const scanFiles: ScanFiles = await fetchScanFiles(filePath);
+      console.log('scan files from:', filePath, ':', scanFiles)
       if (scanFiles.first_number) {
         setInputForm({
           ...inputForm, 
@@ -32,7 +34,6 @@ function MeasurementInputs( measurementProps: MeasurementProps ) {
   const handleInstrumentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     // load files
     const instrument = event.target.value;
-    setInputForm({...inputForm, selectedInstrument: instrument });
     const beamlineVisits = config.visits;
     console.log('Instrument: ', instrument, 'visits', beamlineVisits, instrument in beamlineVisits)
     console.log('inputForm', inputForm, inputForm.selectedInstrument)
@@ -65,8 +66,9 @@ function MeasurementInputs( measurementProps: MeasurementProps ) {
     const value = event.target.value;
     setInputForm({ ...inputForm, background_type: value });
   }
+  console.log('instruments:', instruments)
   return (
-    <form className="form-container" onSubmit={(e) => fetchMeasurement(e, measurementProps)}>
+    <form className="form-container" onSubmit={(e) => fetchMeasurement(e, measurementProps, setFormError)}>
       <h2>Experiment Data</h2>
       {/* ---Instrument Selection--- */}
       { instruments.length > 0 &&  // only display if on /dls file system
@@ -129,11 +131,13 @@ function MeasurementInputs( measurementProps: MeasurementProps ) {
         <select name="background" title='Select background subtraction' value={inputForm.background_type} onChange={handleBackgroundChange}>
           <option value="">Select Background</option>
           <option key="flat" value="flat">flat</option>
+          <option key="linear" value="linear">linear</option>
           <option key="curve" value="curve">curved</option>
           <option key="exp" value="exp">exponential</option>
         </select>
       </div>
       <button type="submit" className="submit-button">Submit</button>
+      {formError && <span className="error">{formError}</span>}
     </form>
   );
 };
