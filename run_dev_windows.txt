@@ -1,0 +1,36 @@
+PolSpeX Dev Guide Windows
+
+# Initial Installation
+1. Copy the repo
+$ cd good/location
+$ git clone https://github.com/DiamondLightSource/polspex.git
+
+2.Create python env
+$ cd polspex
+$ conda env create -f polspex.yml
+$ conda activate polspex
+
+3. Build website
+$ cd fontend
+$ pnpm install
+$ pnpm build
+# If needed, copy dist from frontend/dist to backend/polspex/src/polspex and remove frontend folder
+$ cp -r dist ../backend/polspex/src/polspex
+
+4. install polspex
+$ cd ../backend
+$ python -m pip install -e .
+
+5. Now run polspex!
+$ polspex
+
+# Update on changes
+(pip install -e should capture changes straight away)
+$ cd ../frontend
+$ pnpm build 
+$ polspex 
+(if re-install required)
+$ cd ../backend
+$ python -m pip uninstall polspex
+$ python -m pip install -e .
+$ polspex 
