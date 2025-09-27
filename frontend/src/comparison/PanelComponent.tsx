@@ -34,8 +34,10 @@ export default function ComparisonPanel(comparison: ComparisonProps) {
   console.log('simulationLineData', simulationLineData);
 
   // determine approximate scale of the y-axis
-  const expSum = Math.abs(ops.sum(ndarray(new Float32Array(experimentLineData.y.data))));
-  const simSum = Math.abs(ops.sum(ndarray(new Float32Array(simulationLineData.y.data))));
+  // const expSum = Math.abs(ops.sum(ndarray(new Float32Array(experimentLineData.y.data))));
+  // const simSum = Math.abs(ops.sum(ndarray(new Float32Array(simulationLineData.y.data))));
+  const expSum = Math.abs(ops.sup(ndarray(new Float32Array(experimentLineData.y.data)))); // ops.sup == max
+  const simSum = Math.abs(ops.sup(ndarray(new Float32Array(simulationLineData.y.data))));
   const scale = expSum / simSum; // Calculate the scale factor based on the sum of y-values
   console.log('expSum', expSum, 'simSum', simSum, 'scale:', scale);
   // const scale = 1.0; // Default scale factor
@@ -135,6 +137,13 @@ export default function ComparisonPanel(comparison: ComparisonProps) {
             />
             Invert simulation
           </label>
+        </div>
+
+        <h2>Output</h2>
+        <div>
+          <button type="button">NeXus File</button>
+          <button type="button">ASCII File</button>
+          <button type="button">IPython Notebook</button>
         </div>
       </div>
       <div className="my-right-panel">

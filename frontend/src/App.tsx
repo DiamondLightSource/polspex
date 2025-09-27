@@ -241,11 +241,18 @@ function App() {
       <div className="banner">PolSpeX</div>
       <Tabs>
         <TabList>
+          <Tab>Data Viewer</Tab>
           <Tab>Experiment</Tab>
           <Tab>Simulation</Tab>
           <Tab>Compare</Tab>
           <Tab>Notebook</Tab>
         </TabList>
+
+        <TabPanel>
+          <div>
+            <p>Not Done Yet</p>
+          </div>
+        </TabPanel>
 
         <TabPanel>
           <MeasurementPanel {... measurementProps} /> 

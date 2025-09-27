@@ -48,7 +48,7 @@ def gen_metadata_str(filename: str) -> str:
         "{" + XASMetadata.cmd + "}\n" + 
         "E = {np.mean(" + XASMetadata.energy + "):.2f} eV\n" + 
         "T = {" + XASMetadata.temp + ":.2f} K\n" + 
-        "B = {np.sqrt(%s**2 + %s**2 + %s**2)} T\n" % (XASMetadata.field_x, XASMetadata.field_y, XASMetadata.field_z) + 
+        "B = ({%s:.2g},{%s:.2g},{%s:.2g}) T\n" % (XASMetadata.field_x, XASMetadata.field_y, XASMetadata.field_z) + 
         "Pol = {" + XASMetadata.pol + "}" 
     )
     hdf_map = hdfmap.create_nexus_map(filename)
