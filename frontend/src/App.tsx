@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import { AppTitle, Navbar, ColourSchemeButton  } from '@diamondlightsource/sci-react-ui';
 import 'react-tabs/style/react-tabs.css';
 import './app.css';
 
@@ -8,7 +9,6 @@ import MeasurementPanel from './measurement/PanelComponent';
 import ComparisonPanel from './comparison/PanelComponent';
 import SimulationPanel from './sim/PanelComponent';
 import OpenNotebook from './jupyterRunner';
-
 import { apiConfig } from "./api";
 import type { LinePlotProps } from '@diamondlightsource/davidia';
 
@@ -238,7 +238,13 @@ function App() {
 
   return (
     <div className="container">
-      <div className="banner">PolSpeX</div>
+      {/* <div className="banner">PolSpeX</div> */}
+      {/* <AppTitlebar title="PolSpeX" /> */}
+      <Navbar
+        logo="theme"
+        leftSlot={<AppTitle title="PolSpeX" /> }
+        rightSlot={<><ColourSchemeButton /></>}
+      />
       <Tabs>
         <TabList>
           <Tab>Data Viewer</Tab>

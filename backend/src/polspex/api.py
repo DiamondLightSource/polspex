@@ -124,7 +124,9 @@ def create_fastapi_app():
     """
     Create a FastAPI application instance.
     """
-    app = FastAPI(title="PolSpeX FastAPI", version="0.1.0")
+    from . import __version__
+    
+    app = FastAPI(title="PolSpeX FastAPI", version=__version__)
 
     app.add_middleware(
         CORSMiddleware,
