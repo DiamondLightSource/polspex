@@ -130,6 +130,7 @@ function MeasurementInputs( measurementProps: MeasurementProps ) {
         <label title='Select Background'>Background:</label>
         <select name="background" title='Select background subtraction' value={inputForm.background_type} onChange={handleBackgroundChange}>
           <option value="">Select Background</option>
+          <option key="norm" value="norm">normalise</option>
           <option key="flat" value="flat">flat</option>
           <option key="linear" value="linear">linear</option>
           <option key="curve" value="curve">curved</option>

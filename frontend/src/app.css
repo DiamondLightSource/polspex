@@ -125,13 +125,14 @@ h2 {
   gap: 10px;
   margin-bottom: 20px;
   margin-top: 20px;
+  margin-left: auto;
 }
 
 .number-inputs input {
   padding: 10px;
   border: 2px solid #007bff;
   border-radius: 5px;
-  width: 200px;
+  width: 150px;
 }
 
 .number-inputs button {

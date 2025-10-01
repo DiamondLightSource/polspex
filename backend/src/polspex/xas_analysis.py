@@ -625,10 +625,13 @@ def find_pairs(*filenames: str, background_type: str | None = None, check_simila
     if background_type:
         print('Removing background')
         for m in measurements:
-            m.remove_background('flat')
-            if background_type != 'flat':
-                m.remove_background(background_type)
-            # m.norm_to_jump(ev_from_start=5., ev_from_end=5.)
+            if background_type == 'norm':
+                m.remove_background('norm')
+            else:
+                m.remove_background('flat')
+                if background_type != 'flat':
+                    m.remove_background(background_type)
+            
     print(f"Pairing Polarisations: {polarisations[pol_indexes[0][0]]} and {polarisations[pol_indexes[1][0]]}")
     pairs = [
         PolarisationPair(measurements[i1], measurements[i2])
