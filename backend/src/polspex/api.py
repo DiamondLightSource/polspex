@@ -8,10 +8,14 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import msgpack
+import socket
+import requests
 import numpy as np
 
-import secrets
-from subprocess import Popen
+# import secrets
+import webbrowser
+from threading import Thread
+from time import sleep
 # from contextlib import asynccontextmanager
 # import nest_asyncio
 # import requests
@@ -24,7 +28,7 @@ from .quanty_runner import gen_simulation
 
 
 # Generate a secure token
-jupyter_token = secrets.token_hex(32)
+# jupyter_token = secrets.token_hex(32)
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -138,16 +142,16 @@ def create_fastapi_app():
 
     #@app.get("/api/elements", response_model=AvailableElements)
     @app.get("/api/elements")
-    async def get_element():
+    async def get_elements():
         return AVAILABLE_SYMMETRIES
 
     # @app.get("/api/dq-values", response_model=AvailableDq)
     @app.get("/api/dq-values")
-    async def get_element():
+    async def get_dqvalues():
         return AVAILABLE_DQ  # {ion: {charge: {symmetry: {'initial': {'Dq': 0.1, ...}, 'final': {'Dq': 0.2, ...}}}}}
 
     @app.get("/api/config")
-    async def get_element():
+    async def get_config():
         try:
             quanty_path = get_quanty_path()
         except OSError:
@@ -170,7 +174,7 @@ def create_fastapi_app():
 
 
     @app.post("/api/similar_scans")
-    async def scan_files(data: DataPath):
+    async def similar_scans(data: DataPath):
         if not os.path.isfile(data.path):
             logger.info('File does not exist:', data.path)
             return {}
@@ -220,49 +224,42 @@ def create_fastapi_app():
 
 
     @app.post("/api/simulations", response_model=SimulationOutputs)
-    async def simulation(simulations: Simulations):
-        # Run Quanty
+    async def simulations(simulations: Simulations):
+        # Not in use!
         logger.info('Now I run Quanty with the following parameters:\n', simulations)
-        try:
-            simulation = gen_simulation(
-                ion=simulations.ion,
-                ch_str=simulations.charge,
-                symmetry=simulations.symmetry,
-                beta=simulations.beta,
-                dq=simulations.tenDq['10Dq_i'] if '10Dq_i' in simulations.tenDq else 0.0,
-                mag_field=[simulations.bFieldX, simulations.bFieldY, simulations.bFieldZ],
-                exchange_field=[simulations.hFieldX, simulations.hFieldY, simulations.hFieldZ],
-                temperature=simulations.temperature,
-                quanty_path=simulations.path,
-            )
-            logger.info(f"Running Quanty simulation: {simulation.label}")
-            result = simulation.run_all()
-            logger.debug(f"Simulation output: {result.stdout if result else 'None'}")
-            logger.info(f"Analysing results of simulation: {simulation.label}")
-            table, axis1, axis2 = simulation.analyse()
-            simulations = {
-                "message": f"simulation {simulation.label} succsefull", 
-                "table": table, 
-                "plot1": axis1, 
-                "plot2": axis2
-            }
-        except Exception as e:
-            logger.error(f"Error running simulation: {e}")
-            simulations = {
-                "message": f"Error running simulation: {e}",
-                "table": f"Error running simulation: {e}",
-                "plot1": {}, 
-                "plot2": {},
-            }
+        for inputs in simulations.sims:
+            try:
+                simulation = gen_simulation(
+                    ion=inputs.ion,
+                    ch_str=inputs.charge,
+                    symmetry=inputs.symmetry,
+                    beta=inputs.beta,
+                    dq=inputs.tenDq['10Dq_i'] if '10Dq_i' in inputs.tenDq else 0.0,
+                    mag_field=[inputs.bFieldX, inputs.bFieldY, inputs.bFieldZ],
+                    exchange_field=[inputs.hFieldX, inputs.hFieldY, inputs.hFieldZ],
+                    temperature=inputs.temperature,
+                    quanty_path=inputs.path,
+                )
+                logger.info(f"Running Quanty simulation: {simulation.label}")
+                result = simulation.run_all()
+                logger.debug(f"Simulation output: {result.stdout if result else 'None'}")
+                logger.info(f"Analysing results of simulation: {simulation.label}")
+                table, axis1, axis2 = simulation.analyse()
+                simulations = {
+                    "message": f"simulation {simulation.label} succsefull", 
+                    "table": table, 
+                    "plot1": axis1, 
+                    "plot2": axis2
+                }
+            except Exception as e:
+                logger.error(f"Error running simulation: {e}")
+                simulations = {
+                    "message": f"Error running simulation: {e}",
+                    "table": f"Error running simulation: {e}",
+                    "plot1": {}, 
+                    "plot2": {},
+                }
         packed_data = msgpack.packb(simulations, use_bin_type=True, default=encoder)
-        return Response(content=packed_data, media_type="application/x-msgpack")
-
-    @app.post("/api/pol_pairs", response_model=list[lineProps])
-    async def get_pairs(data: DataFiles):
-        logger.info(f"Finding pairs in files: \n{'\n'.join(data.files)}")
-        data = find_pairs(*data.files)
-        logger.info(f"Found {len(data)} pairs")
-        packed_data = msgpack.packb(data, use_bin_type=True, default=encoder)
         return Response(content=packed_data, media_type="application/x-msgpack")
 
     # @app.post("/api/measurement", response_model=MeasuredData)
@@ -315,16 +312,59 @@ def create_fastapi_app():
     return app
 
 
+def is_port_free(port, host="0.0.0.0"):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        try:
+            s.bind((host, port))
+            return True
+        except OSError:
+            return False
+
+
+def wait_for_server(host, port, timeout=30):
+    url = f"http://{host}:{port}/"
+    for _ in range(timeout * 2):  # check every 0.5s up to timeout seconds
+        try:
+            r = requests.get(url)
+            if r.status_code == 200:
+                return True
+        except Exception:
+            pass
+        sleep(0.5)
+    return False
+
+
+def start_browser_thread(port, host="localhost", timeout=30):
+    """Opens the browser at localhost"""
+    def _open_browser():
+        sleep(1)  # wait for server to start
+        if wait_for_server(host, port, timeout=timeout):
+            webbrowser.open_new_tab(f'http://{host}:{port}/')
+        else:
+            print("Server did not start on time")
+    th = Thread(target=_open_browser)
+    th.start()
+
+
 def polspex_api_server():
     import uvicorn
-    import webbrowser
-    from threading import Thread
-    from time import sleep
-    # app = create_fastapi_app()
-    def open_browser():
-        sleep(2)  # wait for server to start
-        webbrowser.open_new_tab('http://localhost:8123/')
-    th = Thread(target=open_browser)
-    th.start()
-    uvicorn.run('polspex.api:create_fastapi_app', host="0.0.0.0", port=8123, log_level="info", reload=True)
+
+    HOST = "localhost"
+    PORT = 8123
+    max_tries = 10
+    n_tries = 0
+    while not is_port_free(PORT, HOST) and n_tries < max_tries:
+        print(f"Port {PORT} is already in use")
+        PORT += 1
+        n_tries += 1
+
+    if not is_port_free(PORT, HOST):
+        raise Exception(f"Port {PORT} is already in use")
+    
+    # Prepare to run server
+    start_browser_thread(PORT, HOST)
+
+    # Start server
+    uvicorn.run('polspex.api:create_fastapi_app', host=HOST, port=PORT, log_level="info", reload=True)
+
 
