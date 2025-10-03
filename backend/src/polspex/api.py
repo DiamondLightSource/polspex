@@ -318,7 +318,13 @@ def create_fastapi_app():
 def polspex_api_server():
     import uvicorn
     import webbrowser
+    from threading import Thread
+    from time import sleep
     # app = create_fastapi_app()
-    webbrowser.open_new_tab('http://localhost:8123/')
+    def open_browser():
+        sleep(2)  # wait for server to start
+        webbrowser.open_new_tab('http://localhost:8123/')
+    th = Thread(target=open_browser)
+    th.start()
     uvicorn.run('polspex.api:create_fastapi_app', host="0.0.0.0", port=8123, log_level="info", reload=True)
 

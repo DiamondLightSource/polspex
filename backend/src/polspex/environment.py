@@ -13,7 +13,7 @@ BEAMLINE = 'BEAMLINE'
 USER = ['USER', 'USERNAME']
 DLS = '/dls'
 MMG_BEAMLINES = ['i06', 'i06-1', 'i06-2', 'i10', 'i10-1', 'i16', 'i21']
-QUANTY_PATH = 'C:\\Users\\grp66007\\Documents\\quanty\\quanty_win\\QuantyWin64.exe'
+QUANTY_PATH = 'C:\\Users\\grp66007\\Documents\\quanty\\quanty_win\\QuantyWin64.exe'  #TODO: remove this later
 
 regex_scan_number = re.compile(r'\d{3,}')
 
@@ -49,7 +49,7 @@ def get_user():
     return next((os.environ[u] for u in USER if u in os.environ), '')
 
 
-def get_dls_visits(instrument: str | None = None, year: str | int | None = None) -> dict[str]:
+def get_dls_visits(instrument: str | None = None, year: str | int | None = None) -> dict[str, str]:
     """Return list of visits"""
     if instrument is None:
         instrument = get_beamline()
@@ -66,8 +66,9 @@ def get_quanty_path() -> str:
     """Return path to quanty executable, raise OSError if not available"""
     import shutil
     # check if Quanty is available in the system path
-    if shutil.which('Quanty'):
-        return shutil.which('Quanty')
+    path = shutil.which('Quanty')
+    if path:
+        return path
     # check if Quanty is available in the defult path
     if os.path.isfile(QUANTY_PATH):
         return QUANTY_PATH

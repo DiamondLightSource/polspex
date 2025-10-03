@@ -1,4 +1,24 @@
+
+/* panel-components */
+
+.my-window-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  height: auto;
+  width: 80em;
+}
+
+.my-left-panel {
+  flex: 0.25;
+}
+
+.my-right-panel {
+  flex: 0.75;
+}
+
 /* app.tsx */
+
 .container {
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -24,13 +44,30 @@
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  background-color: #f9f9f9;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
   
 h2 {
   text-align: center;
   margin-bottom: 20px;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
 }
 
 .form-group {
@@ -72,7 +109,6 @@ h2 {
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
-  background-color: #fff;
   font-size: 16px;
 }
 
@@ -183,4 +219,14 @@ h2 {
 
 .submit-button:hover {
   background-color: #218838;
+}
+
+.button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #28a745;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
